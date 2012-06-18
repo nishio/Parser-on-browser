@@ -95,7 +95,12 @@ eparse.loadOps = function(code) {
 eparse.interface = function(terminal, ops, load) {
     terminal.terminal(
         function(str, terminal) {
-            terminal.echo(str);
+            try {
+                var tokens = eparse.tokenize(str);
+                terminal.echo('tokens: '+eparse.printTokens(tokens));
+            } catch (err) {
+                eparse.terminal.error(err);
+            }
         },
         {
             greetings: "Expression parser. Type an arithmetic expression",
