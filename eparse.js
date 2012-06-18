@@ -44,6 +44,30 @@ eparse.printTokens = function(tokens) {
     return s;
 };
 
+// Create an operator table from code
+eparse.loadOps = function(code) {
+    var ops = {};
+    var opsList = [];
+
+    // the code will invoke that function
+    // reqs: priority > 0, assoc is 'left' or 'right'
+    var operator = function(name, priority, assoc) {
+        console.log(name);
+        if (!(priority > 0 && (assoc == 'left' || assoc == 'right')))
+            throw 'wrong operator definition for '+name;
+        ops['name'] = { 'priority': priority, 'assoc': assoc };
+        opsList.push(name);
+    };
+    eval(code);
+
+    // now sort the operators according to their length
+    // (the lexer tries to match longer operators first)
+    opsList.sort(function(a, b) { return b.length - a.length; });
+
+    eparse.ops = ops;
+    eparse.opsList = opsList;
+};
+
 // Initialize interface: terminal, operator textarea, load button
 // (given as jQuery objects)
 eparse.interface = function(terminal, ops, load) {
@@ -56,4 +80,14 @@ eparse.interface = function(terminal, ops, load) {
             prompt: 'eparse> '
         });
     eparse.terminal = terminal.terminal();
+    load.click(function() {
+                   eparse.terminal.echo('Loading operators...');
+                   try {
+                       eparse.loadOps(ops.val());
+                       eparse.terminal.echo(eparse.opsList.length+' operators loaded');
+                   } catch (err) {
+                       eparse.terminal.error(err);
+                   }
+               });
+    load.click();
 };
