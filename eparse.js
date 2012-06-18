@@ -80,16 +80,44 @@ eparse.parseTokens = function(tokens) {
 
     var operator = function() {
         if (pos < tokens.length && tokens[pos].type == 'op')
-            return eparse.ops[tokens[pos++].val];
+            return tokens[pos++].val;
         return null;
     };
 
     // a full expression
-    var expr = function() {
-        return simpleExpr();
+    var expr = function(priority) {
+        var e1 = simpleExpr();
+        if (e1 == null)
+            return null;
+
+        for (;;) {
+            if (pos == tokens.length) // end of input
+                return e1;
+
+            var op = operator();
+            if (op == null)
+                throw 'parse error';
+
+            var opData = eparse.ops[op];
+            if (opData.priority < priority ||
+                (opData.priority == priority && opData.assoc == 'left')) {
+                // We finish the expression here and let the caller
+                // handle the rest.
+                pos--; // unread the operator
+                return e1;
+            }
+
+            // Otherwise, continue the expression
+            var e2 = expr(opData.priority);
+            if (e2 == null)
+                throw 'parse error';
+
+            e1 = '['+e1+' '+op+' '+e2+']';
+            // then keep going
+        }
     };
 
-    var result = expr();
+    var result = expr(0);
     if (result == null || pos < tokens.length)
         throw 'parse error';
     return result;
@@ -105,7 +133,7 @@ eparse.loadOps = function(code) {
     var operator = function(name, priority, assoc) {
         if (!(priority > 0 && (assoc == 'left' || assoc == 'right')))
             throw 'wrong operator definition for '+name;
-        ops['name'] = { 'priority': priority, 'assoc': assoc };
+        ops[name] = { 'priority': priority, 'assoc': assoc };
         opsList.push(name);
     };
     eval(code);
