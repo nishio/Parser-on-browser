@@ -18,6 +18,15 @@ eparse.tokenize = function(str) {
     var tokens = [];
     deleteSpaces();
 
+    // If input starts with 's', delete it and return true
+    var tryConsume = function(s) {
+        if (input.substr(0, s.length) == s) {
+            input = input.substr(s.length);
+            return true;
+        }
+        return false;
+    };
+
     for (; input.length > 0; deleteSpaces()) {
         // First, look for a number
         var m = /^\d+/.exec(input);
@@ -26,6 +35,20 @@ eparse.tokenize = function(str) {
             tokens.push({type: 'number', val: parseInt(m[0])});
             continue;
         }
+
+        // Now, try the operators
+        var opFound = false;
+        for (var i = 0; i < eparse.opsList.length; i++) {
+            var op = eparse.opsList[i];
+            if (tryConsume(op)) {
+                tokens.push({type: 'op', val: op});
+                opFound = true;
+                break;
+            }
+        }
+        if (opFound)
+            continue;
+
         throw 'lexer error';
     }
     return tokens;

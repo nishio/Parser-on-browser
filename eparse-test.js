@@ -13,6 +13,8 @@ eparse.test = function() {
     try {
         assertEqual(eparse.printTokens(eparse.tokenize('1 2 3')),
                     '[number(1), number(2), number(3)]');
+        assertEqual(eparse.printTokens(eparse.tokenize('2+3**5')),
+                    '[number(2), op(+), number(3), op(**), number(5)]');
         eparse.terminal.echo('All tests OK!');
     } catch (err) {
         eparse.terminal.error('test: '+err);
