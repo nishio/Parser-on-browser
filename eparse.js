@@ -69,12 +69,16 @@ eparse.tokenize = function(str) {
     return tokens;
 };
 
+eparse.printToken = function(token) {
+    return token.type + '(' + token.val + ')';
+};
+
 // Formats an array of tokens to a string in the format:
 // [ number(2), op(+), ... ]
 eparse.printTokens = function(tokens) {
     var s = '[';
     for (var i = 0; i < tokens.length; ++i) {
-        s += tokens[i].type+'('+tokens[i].val+')';
+        s += eparse.printToken(tokens[i]);
         if (i < tokens.length-1)
             s += ', ';
     }
@@ -85,6 +89,13 @@ eparse.printTokens = function(tokens) {
 // Parse the tokens as an arithmetic expression. Returns a string description
 eparse.parseTokens = function(tokens) {
     var pos = 0;
+
+    var parseError = function() {
+        if (pos == tokens.length)
+            throw 'Parse error at the end of input';
+        else
+            throw 'Parse error before '+eparse.printToken(tokens[pos]);
+    };
 
     // a number, or a parenthesized expression
     var simpleExpr = function() {
@@ -98,9 +109,9 @@ eparse.parseTokens = function(tokens) {
             pos++;
             var e = expr(0);
             if (e == null)
-                throw 'parse error';
+                parseError();
             if (pos == tokens.length || tokens[pos].type != 'rparen')
-                throw 'parse error';
+                parseError();
             pos++;
             return e;
         }
@@ -137,7 +148,7 @@ eparse.parseTokens = function(tokens) {
             // Otherwise, continue the expression
             var e2 = expr(opData.priority);
             if (e2 == null)
-                throw 'parse error';
+                parseError();
 
             e1 = '['+e1+' '+op+' '+e2+']';
             // then keep going
@@ -146,7 +157,7 @@ eparse.parseTokens = function(tokens) {
 
     var result = expr(0);
     if (result == null || pos < tokens.length)
-        throw 'parse error';
+        parseError();
     return result;
 };
 
