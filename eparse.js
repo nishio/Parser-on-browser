@@ -60,7 +60,11 @@ eparse.tokenize = function(str) {
             continue;
         }
 
-        throw 'lexer error';
+        // We failed - now report the error. First, determine the position
+        var pos = str.length - input.length;
+        // string before error:
+        var start = str.substr(0, pos);
+        throw 'Lexer error: ' + start + '<HERE>' + input;
     }
     return tokens;
 };
