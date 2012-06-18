@@ -31,6 +31,19 @@ eparse.tokenize = function(str) {
     return tokens;
 };
 
+// Formats an array of tokens to a string in the format:
+// [ number(2), op(+), ... ]
+eparse.printTokens = function(tokens) {
+    var s = '[';
+    for (var i = 0; i < tokens.length; ++i) {
+        s += tokens[i].type+'('+tokens[i].val+')';
+        if (i < tokens.length-1)
+            s += ', ';
+    }
+    s += ']';
+    return s;
+};
+
 // Initialize interface: terminal, operator textarea, load button
 // (given as jQuery objects)
 eparse.interface = function(terminal, ops, load) {
