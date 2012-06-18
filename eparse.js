@@ -75,7 +75,6 @@ eparse.loadOps = function(code) {
     // the code will invoke that function
     // reqs: priority > 0, assoc is 'left' or 'right'
     var operator = function(name, priority, assoc) {
-        console.log(name);
         if (!(priority > 0 && (assoc == 'left' || assoc == 'right')))
             throw 'wrong operator definition for '+name;
         ops['name'] = { 'priority': priority, 'assoc': assoc };
