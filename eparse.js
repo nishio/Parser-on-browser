@@ -126,6 +126,7 @@ eparse.interface = function(terminal, ops, load) {
             try {
                 var tokens = eparse.tokenize(str);
                 terminal.echo('tokens: '+eparse.printTokens(tokens));
+                terminal.echo('result: '+eparse.parseTokens(tokens));
             } catch (err) {
                 eparse.terminal.error(err);
             }
