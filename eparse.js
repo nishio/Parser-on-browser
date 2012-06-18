@@ -82,10 +82,25 @@ eparse.printTokens = function(tokens) {
 eparse.parseTokens = function(tokens) {
     var pos = 0;
 
-    // a number
+    // a number, or a parenthesized expression
     var simpleExpr = function() {
-        if (pos < tokens.length && tokens[pos].type == 'number')
+        if (pos == tokens.length)
+            return null;
+
+        if(tokens[pos].type == 'number')
             return tokens[pos++].val.toString();
+
+        if(tokens[pos].type == 'lparen') {
+            pos++;
+            var e = expr(0);
+            if (e == null)
+                throw 'parse error';
+            if (pos == tokens.length || tokens[pos].type != 'rparen')
+                throw 'parse error';
+            pos++;
+            return e;
+        }
+
         return null;
     };
 
@@ -102,12 +117,9 @@ eparse.parseTokens = function(tokens) {
             return null;
 
         for (;;) {
-            if (pos == tokens.length) // end of input
-                return e1;
-
             var op = operator();
             if (op == null)
-                throw 'parse error';
+                return e1;
 
             var opData = eparse.ops[op];
             if (opData.priority < priority ||

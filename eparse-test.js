@@ -25,6 +25,10 @@ eparse.test = function() {
         assertEqual(eparse.parseTokens(eparse.tokenize('2+2**3**4*2+2')),
                     '[[2 + [[2 ** [3 ** 4]] * 2]] + 2]');
 
+        assertEqual(eparse.parseTokens(eparse.tokenize('(2+2)*2')),
+                    '[[2 + 2] * 2]');
+
+
         eparse.terminal.echo('All tests OK!');
     } catch (err) {
         eparse.terminal.error('test: '+err);
