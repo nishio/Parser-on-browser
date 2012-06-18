@@ -49,6 +49,17 @@ eparse.tokenize = function(str) {
         if (opFound)
             continue;
 
+        // Then try parentheses
+        if (tryConsume('(')) {
+            tokens.push({type: 'lparen', val: ''});
+            continue;
+        }
+
+        if (tryConsume(')')) {
+            tokens.push({type: 'rparen', val: ''});
+            continue;
+        }
+
         throw 'lexer error';
     }
     return tokens;
