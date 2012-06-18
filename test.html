@@ -10,8 +10,8 @@
     $(function() {
           eparse.interface($('#term'), $('#operators'), $('#load'));
           eparse.test();
-          $('body').click(function() { lisp.terminal.disable(); });
-          $('#clear').click(function () { lisp.terminal.clear(); });
+          $('body').click(function() { eparse.terminal.disable(); });
+          $('#clear').click(function () { eparse.terminal.clear(); });
     });
   </script>
 </head>
