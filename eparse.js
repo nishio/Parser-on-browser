@@ -67,6 +67,34 @@ eparse.printTokens = function(tokens) {
     return s;
 };
 
+// Parse the tokens as an arithmetic expression. Returns a string description
+eparse.parseTokens = function(tokens) {
+    var pos = 0;
+
+    // a number
+    var simpleExpr = function() {
+        if (pos < tokens.length && tokens[pos].type == 'number')
+            return tokens[pos++].val.toString();
+        return null;
+    };
+
+    var operator = function() {
+        if (pos < tokens.length && tokens[pos].type == 'op')
+            return eparse.ops[tokens[pos++].val];
+        return null;
+    };
+
+    // a full expression
+    var expr = function() {
+        return simpleExpr();
+    };
+
+    var result = expr();
+    if (result == null || pos < tokens.length)
+        throw 'parse error';
+    return result;
+};
+
 // Create an operator table from code
 eparse.loadOps = function(code) {
     var ops = {};
