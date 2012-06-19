@@ -2,27 +2,43 @@
  Parser on browser
 ===================
 
-TODO
-====
+Feature
+=======
 
-- The operator table will be editable by the user in a textbox, for example:
+- The operator table is editable by the user in a textbox, for example:
 
 ::
 
+   // define operators here
    // arguments: name, priority (>0), associativity ('left', 'right')
+
    operator('+', 1, 'left');
+   operator('^', 3, 'left');
    operator('-', 1, 'left');
    operator('*', 2, 'left');
    operator('/', 2, 'left');
    operator('**', 3, 'right');
 
-- apart from that, the parser will of course understand '(' ')'
 
-- The user will input an expression and receive a list of tokens, then the parser result, for example:
+- The parser understand '(' ')'
+
+- The user input an expression and receive a list of tokens, then the parser result, for example:
 
 ::
 
-   input: 2+2*2**2**2*2+2
-   tokens (lexer result): [number(2), op(+), number(2), op(*), number(2), ...]
-   parser result: [[2 + [[2 * [2 ** [2 ** 2]]] * 2]] + 2]
+   eparse> 2+2*2**2**2*2+2
+   tokens: [number(2), op(+), number(2), op(*), number(2), op(**), number
+   (2), op(**), number(2), op(*), number(2), op(+), number(2)]
+   result: [[2 + [[2 * [2 ** [2 ** 2]]] * 2]] + 2]
 
+
+License
+=======
+
+GPLv3
+
+
+Thanks
+======
+
+Paweł Marczewski wrote almost codes.
