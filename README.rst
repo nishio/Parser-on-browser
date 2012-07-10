@@ -45,10 +45,10 @@ https://github.com/nishio/Parser-on-browser
 License
 =======
 
-GPLv3
+GPLv3 (c) NISHIO Hirokazu 2012
 
 
 Thanks
 ======
 
-Paweł Marczewski wrote almost codes.
+Paweł Marczewski contributed much to the project.
